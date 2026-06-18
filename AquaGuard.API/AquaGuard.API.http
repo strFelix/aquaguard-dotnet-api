@@ -1,0 +1,6 @@
+@AquaGuard.API_HostAddress = http://localhost:5187
+
+GET {{AquaGuard.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
