@@ -1,4 +1,5 @@
 ﻿using AquaGuard.API.Models;
+using AquaGuard.API.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace AquaGuard.API.Data;
@@ -24,7 +25,10 @@ public class AppDbContext : DbContext
             e.Property(u => u.Nome).IsRequired().HasMaxLength(100);
             e.Property(u => u.Email).IsRequired().HasMaxLength(150);
             e.Property(u => u.SenhaHash).IsRequired();
-            e.Property(u => u.Role).IsRequired().HasMaxLength(20);
+            e.Property(u => u.Role)
+             .IsRequired()
+             .HasConversion<string>()
+             .HasMaxLength(20);
         });
 
         // Medidor
@@ -59,7 +63,14 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Alerta>(e =>
         {
             e.HasKey(a => a.Id);
-            e.Property(a => a.Tipo).IsRequired().HasMaxLength(50);
+            e.Property(a => a.Tipo)
+             .IsRequired()
+             .HasConversion<string>()
+             .HasMaxLength(30);
+            e.Property(a => a.Status)
+             .IsRequired()
+             .HasConversion<string>()
+             .HasMaxLength(20);
             e.Property(a => a.Descricao).IsRequired().HasMaxLength(500);
 
             e.HasOne(a => a.Medidor)
@@ -68,7 +79,6 @@ public class AppDbContext : DbContext
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // Seed
         SeedData(modelBuilder);
     }
 
@@ -81,7 +91,7 @@ public class AppDbContext : DbContext
                 Nome = "Administrador",
                 Email = "admin@aquaguard.com",
                 SenhaHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
-                Role = "Admin",
+                Role = UserRole.Admin,
                 DataCriacao = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new Usuario
@@ -90,7 +100,16 @@ public class AppDbContext : DbContext
                 Nome = "Operador Padrão",
                 Email = "operador@aquaguard.com",
                 SenhaHash = BCrypt.Net.BCrypt.HashPassword("Operador@123"),
-                Role = "Operador",
+                Role = UserRole.Operador,
+                DataCriacao = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Usuario
+            {
+                Id = 3,
+                Nome = "Auditor Padrão",
+                Email = "auditor@aquaguard.com",
+                SenhaHash = BCrypt.Net.BCrypt.HashPassword("Auditor@123"),
+                Role = UserRole.Auditor,
                 DataCriacao = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );

@@ -1,4 +1,6 @@
-﻿namespace AquaGuard.API.Models;
+﻿using AquaGuard.API.Models.Enums;
+
+namespace AquaGuard.API.Models;
 
 public class Usuario
 {
@@ -6,6 +8,6 @@ public class Usuario
     public string Nome { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string SenhaHash { get; set; } = string.Empty;
-    public string Role { get; set; } = string.Empty;
+    public UserRole Role { get; set; } = UserRole.Operador;
     public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
 }
