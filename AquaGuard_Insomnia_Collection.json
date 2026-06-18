@@ -1,0 +1,365 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-06-18T12:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8.6.1",
+  "resources": [
+    {
+      "_id": "wrk_aquaguard",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "AquaGuard API",
+      "description": "Collection para testes da API AquaGuard - Monitoramento de Consumo de Água",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_aquaguard",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "https://localhost:7000",
+        "token": "",
+        "medidor_id": "1",
+        "leitura_id": "1",
+        "alerta_id": "1"
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "token", "medidor_id", "leitura_id", "alerta_id"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1
+    },
+
+    {
+      "_id": "fld_auth",
+      "_type": "request_group",
+      "parentId": "wrk_aquaguard",
+      "name": "Auth",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -7
+    },
+    {
+      "_id": "req_login",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login",
+      "description": "Autentica o usuário e retorna o token JWT",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/login",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"admin@aquaguard.com\",\n  \"senha\": \"Admin@123\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "metaSortKey": -7000
+    },
+
+    {
+      "_id": "fld_medidores",
+      "_type": "request_group",
+      "parentId": "wrk_aquaguard",
+      "name": "Medidores",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -6
+    },
+    {
+      "_id": "req_medidores_list",
+      "_type": "request",
+      "parentId": "fld_medidores",
+      "name": "Listar Medidores (paginado)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/medidores",
+      "parameters": [
+        { "name": "page", "value": "1" },
+        { "name": "pageSize", "value": "10" }
+      ],
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -6000
+    },
+    {
+      "_id": "req_medidores_get",
+      "_type": "request",
+      "parentId": "fld_medidores",
+      "name": "Consultar Medidor por Id",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/medidores/{{ _.medidor_id }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -5900
+    },
+    {
+      "_id": "req_medidores_create",
+      "_type": "request",
+      "parentId": "fld_medidores",
+      "name": "Cadastrar Medidor",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/medidores",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"MED-004\",\n  \"localizacao\": \"Bloco C - 2º Andar\",\n  \"limiteMensalLitros\": 25000\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -5800
+    },
+    {
+      "_id": "req_medidores_update",
+      "_type": "request",
+      "parentId": "fld_medidores",
+      "name": "Atualizar Medidor",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/medidores/{{ _.medidor_id }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"MED-001\",\n  \"localizacao\": \"Bloco A - Térreo (Atualizado)\",\n  \"limiteMensalLitros\": 55000\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -5700
+    },
+    {
+      "_id": "req_medidores_delete",
+      "_type": "request",
+      "parentId": "fld_medidores",
+      "name": "Desativar Medidor (Soft Delete)",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/medidores/{{ _.medidor_id }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -5600
+    },
+
+    {
+      "_id": "fld_leituras",
+      "_type": "request_group",
+      "parentId": "wrk_aquaguard",
+      "name": "Leituras",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -5
+    },
+    {
+      "_id": "req_leituras_list",
+      "_type": "request",
+      "parentId": "fld_leituras",
+      "name": "Histórico de Leituras (paginado)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/leituras",
+      "parameters": [
+        { "name": "page", "value": "1" },
+        { "name": "pageSize", "value": "10" }
+      ],
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -5000
+    },
+    {
+      "_id": "req_leituras_periodo",
+      "_type": "request",
+      "parentId": "fld_leituras",
+      "name": "Leituras por Período",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/leituras/periodo",
+      "parameters": [
+        { "name": "inicio", "value": "2024-05-01T00:00:00Z" },
+        { "name": "fim", "value": "2024-05-31T23:59:59Z" }
+      ],
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -4900
+    },
+    {
+      "_id": "req_leituras_por_medidor",
+      "_type": "request",
+      "parentId": "fld_leituras",
+      "name": "Leituras por Medidor",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/leituras/medidor/{{ _.medidor_id }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -4800
+    },
+    {
+      "_id": "req_leituras_create",
+      "_type": "request",
+      "parentId": "fld_leituras",
+      "name": "Registrar Leitura (Consumo Normal)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/leituras",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"medidorId\": {{ _.medidor_id }},\n  \"litrosConsumidos\": 1100,\n  \"dataLeitura\": \"2024-05-15T08:00:00Z\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -4700
+    },
+    {
+      "_id": "req_leituras_create_vazamento",
+      "_type": "request",
+      "parentId": "fld_leituras",
+      "name": "Registrar Leitura (Simular Vazamento)",
+      "description": "Use um valor acima de 150% da média dos últimos 7 dias para o medidor 1 (que já tem leituras seed entre 1200-1350L)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/leituras",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"medidorId\": 1,\n  \"litrosConsumidos\": 3000,\n  \"dataLeitura\": \"2024-05-16T08:00:00Z\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -4600
+    },
+
+    {
+      "_id": "fld_alertas",
+      "_type": "request_group",
+      "parentId": "wrk_aquaguard",
+      "name": "Alertas",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -4
+    },
+    {
+      "_id": "req_alertas_list",
+      "_type": "request",
+      "parentId": "fld_alertas",
+      "name": "Listar Alertas (paginado)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/alertas",
+      "parameters": [
+        { "name": "page", "value": "1" },
+        { "name": "pageSize", "value": "10" }
+      ],
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -4000
+    },
+    {
+      "_id": "req_alertas_pendentes",
+      "_type": "request",
+      "parentId": "fld_alertas",
+      "name": "Alertas Pendentes",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/alertas/pendentes",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -3900
+    },
+    {
+      "_id": "req_alertas_resolver",
+      "_type": "request",
+      "parentId": "fld_alertas",
+      "name": "Resolver Alerta",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/alertas/{{ _.alerta_id }}/resolver",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -3800
+    },
+
+    {
+      "_id": "fld_relatorios",
+      "_type": "request_group",
+      "parentId": "wrk_aquaguard",
+      "name": "Relatórios",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -3
+    },
+    {
+      "_id": "req_relatorio_mensal",
+      "_type": "request",
+      "parentId": "fld_relatorios",
+      "name": "Relatório Mensal",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/relatorios/mensal",
+      "parameters": [
+        { "name": "ano", "value": "2024" },
+        { "name": "mes", "value": "5" }
+      ],
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -3000
+    },
+    {
+      "_id": "req_relatorio_medidor",
+      "_type": "request",
+      "parentId": "fld_relatorios",
+      "name": "Relatório por Medidor",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/relatorios/medidor/{{ _.medidor_id }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -2900
+    },
+
+    {
+      "_id": "fld_dashboard",
+      "_type": "request_group",
+      "parentId": "wrk_aquaguard",
+      "name": "Dashboard",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -2
+    },
+    {
+      "_id": "req_dashboard",
+      "_type": "request",
+      "parentId": "fld_dashboard",
+      "name": "Dashboard ESG",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/dashboard",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "metaSortKey": -2000
+    },
+
+    {
+      "_id": "fld_health",
+      "_type": "request_group",
+      "parentId": "wrk_aquaguard",
+      "name": "Health Check",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -1
+    },
+    {
+      "_id": "req_health",
+      "_type": "request",
+      "parentId": "fld_health",
+      "name": "Health Check",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health",
+      "headers": [],
+      "metaSortKey": -1000
+    }
+  ]
+}
