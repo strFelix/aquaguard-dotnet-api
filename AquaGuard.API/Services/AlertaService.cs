@@ -55,7 +55,7 @@ public class AlertaService : IAlertaService
             Id = a.Id,
             MedidorId = a.MedidorId,
             CodigoMedidor = a.Medidor?.Codigo ?? string.Empty,
-            Tipo = a.Tipo,
+            Tipo = a.Tipo.ToString(),
             Descricao = a.Descricao,
             Resolvido = a.Status == StatusAlerta.Resolvido,
             DataCriacao = a.DataCriacao
