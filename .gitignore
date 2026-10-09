@@ -2,6 +2,10 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotnetcore,visualstudio,visualstudiocode
 
 ### DotnetCore ###
+.env
+.env.*
+!.env.example
+
 # .NET Core build folders
 bin/
 obj/

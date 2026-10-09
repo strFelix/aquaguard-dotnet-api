@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - hml
+  push:
+    branches:
+      - main
+      - hml
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+
+      - name: Restore
+        run: dotnet restore AquaGuard.sln
+
+      - name: Build
+        run: dotnet build AquaGuard.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test AquaGuard.sln --configuration Release --no-build --no-restore
+
+      - name: Build Docker image
+        run: docker build --file AquaGuard.API/Dockerfile --tag aquaguard-api:${{ github.sha }} .
