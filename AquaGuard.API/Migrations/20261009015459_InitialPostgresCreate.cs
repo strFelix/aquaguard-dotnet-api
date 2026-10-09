@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AquaGuard.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialPostgresCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,13 +18,13 @@ namespace AquaGuard.API.Migrations
                 name: "Medidores",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Codigo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Localizacao = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    LimiteMensalLitros = table.Column<double>(type: "float", nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false),
-                    DataCriacao = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Codigo = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Localizacao = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    LimiteMensalLitros = table.Column<double>(type: "double precision", nullable: false),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    DataCriacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,13 +35,13 @@ namespace AquaGuard.API.Migrations
                 name: "Usuarios",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    SenhaHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    DataCriacao = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    SenhaHash = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    DataCriacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,13 +52,13 @@ namespace AquaGuard.API.Migrations
                 name: "Alertas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MedidorId = table.Column<int>(type: "int", nullable: false),
-                    Tipo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Resolvido = table.Column<bool>(type: "bit", nullable: false),
-                    DataCriacao = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    MedidorId = table.Column<int>(type: "integer", nullable: false),
+                    Tipo = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    Descricao = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    DataCriacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,12 +75,12 @@ namespace AquaGuard.API.Migrations
                 name: "Leituras",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MedidorId = table.Column<int>(type: "int", nullable: false),
-                    LitrosConsumidos = table.Column<double>(type: "float", nullable: false),
-                    DataLeitura = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    MedidorId = table.Column<int>(type: "integer", nullable: false),
+                    LitrosConsumidos = table.Column<double>(type: "double precision", nullable: false),
+                    DataLeitura = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UsuarioId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -113,8 +114,9 @@ namespace AquaGuard.API.Migrations
                 columns: new[] { "Id", "DataCriacao", "Email", "Nome", "Role", "SenhaHash" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "admin@aquaguard.com", "Administrador", "Admin", "$2a$11$xmOJr/L3WHoUMfQGSmPTjOl1o3e.j4NAThCeGhTNiBvFp4TzqUItm" },
-                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "operador@aquaguard.com", "Operador Padrão", "Operador", "$2a$11$25UNlyV39xsRWaGcISxa5.yAKGBngF875XS5CQsqt0U4KZmZOZJwu" }
+                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "admin@aquaguard.com", "Administrador", "Admin", "$2a$11$6/.Szq6Zi.x1Em4clcVHmea9ENrFFzF9rtlOYtxj5lKLa14p5cmMK" },
+                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "operador@aquaguard.com", "Operador Padrão", "Operador", "$2a$11$lRkmrD5HEQsrdK6NhSnO5u4/pOoBeqw9NB8Z6e9qLadhhhrNUdEGu" },
+                    { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "auditor@aquaguard.com", "Auditor Padrão", "Auditor", "$2a$11$OlJAUVAYquiE0C5TWFmI9uzK6QKZTV8FRwOp0pIFYAns6Uqrcdln6" }
                 });
 
             migrationBuilder.InsertData(

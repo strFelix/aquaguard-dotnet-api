@@ -90,7 +90,7 @@ public class AppDbContext : DbContext
                 Id = 1,
                 Nome = "Administrador",
                 Email = "admin@aquaguard.com",
-                SenhaHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+                SenhaHash = "$2a$11$6/.Szq6Zi.x1Em4clcVHmea9ENrFFzF9rtlOYtxj5lKLa14p5cmMK",
                 Role = UserRole.Admin,
                 DataCriacao = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -99,7 +99,7 @@ public class AppDbContext : DbContext
                 Id = 2,
                 Nome = "Operador Padrão",
                 Email = "operador@aquaguard.com",
-                SenhaHash = BCrypt.Net.BCrypt.HashPassword("Operador@123"),
+                SenhaHash = "$2a$11$lRkmrD5HEQsrdK6NhSnO5u4/pOoBeqw9NB8Z6e9qLadhhhrNUdEGu",
                 Role = UserRole.Operador,
                 DataCriacao = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -108,7 +108,7 @@ public class AppDbContext : DbContext
                 Id = 3,
                 Nome = "Auditor Padrão",
                 Email = "auditor@aquaguard.com",
-                SenhaHash = BCrypt.Net.BCrypt.HashPassword("Auditor@123"),
+                SenhaHash = "$2a$11$OlJAUVAYquiE0C5TWFmI9uzK6QKZTV8FRwOp0pIFYAns6Uqrcdln6",
                 Role = UserRole.Auditor,
                 DataCriacao = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }

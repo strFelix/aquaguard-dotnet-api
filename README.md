@@ -16,14 +16,14 @@ A API não possui interface gráfica própria; o consumo é feito via Swagger, P
 |---|---|
 | Framework | .NET 8 / ASP.NET Core Web API |
 | ORM | Entity Framework Core 8 |
-| Banco de dados | SQL Server (LocalDB em desenvolvimento) |
+| Banco de dados | PostgreSQL (Supabase) |
 | Autenticação | JWT Bearer |
 | Hashing de senha | BCrypt.Net |
 | Validação | FluentValidation |
 | Documentação | Swagger / OpenAPI |
 | Testes | xUnit + EF Core InMemory Provider |
 | Containerização | Docker |
-| Health Check | AspNetCore.HealthChecks.SqlServer |
+| Health Check | Entity Framework Core |
 
 ## Arquitetura
 
@@ -176,26 +176,27 @@ Exceções não tratadas são capturadas por um middleware global, retornando se
 ### Pré-requisitos
 
 - .NET 8 SDK
-- SQL Server (LocalDB ou instância completa)
+- PostgreSQL 15 ou superior (local ou Supabase)
 - Visual Studio 2022 ou superior
 
 ### Configuração
 
 1. Clone o repositório
-2. Ajuste a connection string em `appsettings.json`, se necessário:
-
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=AquaGuardDb;Trusted_Connection=True;MultipleActiveResultSets=true"
-}
-```
-
-3. Aplique as migrations:
+2. Configure uma instância PostgreSQL local ou crie um projeto gratuito no [Supabase](https://supabase.com/pricing). O plano grátis inclui 500 MB e pausa projetos após uma semana sem atividade. Configure a connection string como segredo, sem adicioná-la ao Git:
 
 ```powershell
-Add-Migration InitialCreate
-Update-Database
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<connection-string-do-postgres>" --project AquaGuard.API
 ```
+
+No Azure App Service, defina a configuração de aplicativo `ConnectionStrings__DefaultConnection` com a connection string **Session pooler** exibida no painel do Supabase e SSL habilitado (`SSL Mode=Require`). Use também uma chave JWT própria em `Jwt__Key`; não publique a chave demonstrativa do `appsettings.json`.
+
+3. Aplique as migrations ao banco configurado:
+
+```powershell
+dotnet ef database update --project AquaGuard.API
+```
+
+> A migration PostgreSQL cria o schema do zero e inclui os dados iniciais; ela não converte nem transfere dados de uma instalação SQL Server anterior. Use um banco Supabase vazio.
 
 4. Execute o projeto (`F5` no Visual Studio ou `dotnet run`)
 5. Acesse o Swagger em `https://localhost:{porta}/swagger`
@@ -207,6 +208,8 @@ Update-Database
 | admin@aquaguard.com | Admin@123 | Admin |
 | operador@aquaguard.com | Operador@123 | Operador |
 | auditor@aquaguard.com | Auditor@123 | Auditor |
+
+> Essas contas e senhas são apenas para demonstração. Troque-as antes de disponibilizar a API publicamente.
 
 ### Testando a API
 

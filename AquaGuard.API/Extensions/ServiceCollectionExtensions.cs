@@ -1,4 +1,5 @@
-﻿using AquaGuard.API.Repositories;
+﻿using AquaGuard.API.Data;
+using AquaGuard.API.Repositories;
 using AquaGuard.API.Repositories.Interfaces;
 using AquaGuard.API.Services;
 using AquaGuard.API.Services.Interfaces;
@@ -39,10 +40,10 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddHealthChecksConfigured(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddHealthChecksConfigured(this IServiceCollection services)
     {
         services.AddHealthChecks()
-            .AddSqlServer(connectionString, name: "sqlserver", tags: new[] { "db", "sql" });
+            .AddDbContextCheck<AppDbContext>(name: "database", tags: new[] { "db" });
 
         return services;
     }
