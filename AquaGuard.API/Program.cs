@@ -31,6 +31,13 @@ builder.Services.AddHealthChecksConfigured();
 
 var app = builder.Build();
 
+if (builder.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
+{
+    using IServiceScope scope = app.Services.CreateScope();
+    AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

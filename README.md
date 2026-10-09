@@ -1,4 +1,6 @@
-# AquaGuard API
+# Projeto - Cidades ESGInteligentes
+
+## AquaGuard API
 
 API REST para monitoramento de consumo de água, detecção automática de vazamentos e geração de indicadores ESG de preservação de recursos hídricos, desenvolvida como projeto acadêmico com foco no tema **Acesso à Água e Preservação de Recursos Naturais**.
 
@@ -22,7 +24,7 @@ A API não possui interface gráfica própria; o consumo é feito via Swagger, P
 | Validação | FluentValidation |
 | Documentação | Swagger / OpenAPI |
 | Testes | xUnit + EF Core InMemory Provider |
-| Containerização | Docker |
+| Containerização e orquestração | Docker e Docker Compose |
 | Health Check | Entity Framework Core |
 
 ## Arquitetura
@@ -220,8 +222,81 @@ Uma collection do Insomnia com todos os endpoints já configurados está dispon�
 O projeto possui testes de integração (via `WebApplicationFactory` com banco InMemory) cobrindo o retorno HTTP 200 de cada controller, além de testes unitários da camada de Services validando as regras de detecção de vazamento, consumo excessivo e cálculo de relatórios.
 
 ```powershell
-dotnet test
+dotnet test AquaGuard.sln --configuration Release
 ```
+
+O workflow [CI](.github/workflows/ci.yml) executa restore, build, todos os testes e build da imagem Docker em pull requests e pushes para `main` e `hml`. Os workflows [CD de produção](.github/workflows/main_aquaguardapi.yml) e [CD de staging](.github/workflows/hml_aquaguardapi-staging.yml) também exigem build, testes e build Docker aprovados antes do deploy, e validam `/health` depois da publicação.
+
+### Ambientes publicados
+
+| Ambiente | Branch | URL |
+|---|---|---|
+| Staging | `hml` | https://aquaguardapi-staging-e7aeezcqatemaght.canadacentral-01.azurewebsites.net |
+| Produção | `main` | https://aquaguardapi-evh6dzbvg4b8d7cd.canadacentral-01.azurewebsites.net |
+
+Após o deploy, valide o health check dos dois ambientes:
+
+```powershell
+./scripts/smoke-test.ps1
+```
+
+O script falha se algum endpoint `/health` não retornar HTTP 200 e `Healthy`. Os ambientes devem usar configurações e bancos separados; nunca configure staging para gravar no banco de produção.
+
+## Como executar localmente com Docker
+
+Requisitos: Docker Desktop com Docker Compose v2.
+
+1. Crie o arquivo local de configuração a partir do exemplo:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+2. Se desejar, altere os valores de desenvolvimento no `.env`. Esse arquivo está no `.gitignore`; não coloque nele credenciais do Supabase.
+3. Suba a API e o PostgreSQL:
+
+   ```powershell
+   docker compose up --build -d
+   ```
+
+   A API aguarda o banco ficar saudável e aplica as migrations na inicialização porque o Compose habilita explicitamente `Database__MigrateOnStartup`.
+4. Confira os logs e acesse o Swagger:
+
+   ```powershell
+   docker compose logs -f api
+   ```
+
+   Swagger: http://localhost:8080/swagger
+
+   Health check: http://localhost:8080/health
+
+O Compose define uma rede isolada entre API e banco, publica a API na porta `8080`, expõe PostgreSQL localmente na porta `5433` e persiste os dados no volume `postgres_data`. `docker compose down` remove os containers, mas mantém o volume; para apagar também os dados locais use `docker compose down --volumes`.
+
+## Containerização
+
+O [Dockerfile](AquaGuard.API/Dockerfile) usa build multi-stage: restaura/compila/publica com a imagem SDK do .NET 8 e copia somente os artefatos publicados para a imagem ASP.NET Runtime. O container final usa o usuário não-root padrão da imagem. O [docker-compose.yml](docker-compose.yml) coordena API e PostgreSQL, com rede, variáveis de ambiente, health check do banco e volume persistente.
+
+Construir a imagem manualmente:
+
+```powershell
+docker build -f AquaGuard.API/Dockerfile -t aquaguard-api:local .
+```
+
+## Pipeline CI/CD
+
+- **CI (GitHub Actions):** em pull requests e pushes para `main` e `hml`, restaura dependências, compila em Release, executa a suíte xUnit existente e valida o build da imagem Docker.
+- **CD (GitHub Actions + Azure App Service):** `main` publica em produção e `hml` publica em staging. Cada workflow bloqueia o deploy se build, testes ou build Docker falharem e testa o health check após publicar. Os segredos de autenticação do Azure ficam nos GitHub Secrets e as configurações da aplicação ficam no App Service; `ConnectionStrings__DefaultConnection` e `Jwt__Key` não devem ser colocados nos arquivos do repositório.
+- **Verificação pós-deploy:** os workflows verificam `/health` automaticamente. Também é possível executar `./scripts/smoke-test.ps1` manualmente para validar os dois ambientes. Guarde capturas dos workflows concluídos e das respostas `/health` como evidências para o PDF/PPT.
+
+O workflow de CI não publica imagens em registry: ele constrói a imagem como validação. O workflow de staging deve estar presente na branch `hml`; ao integrar as alterações deste repositório nessa branch, o CD de staging executará build, testes, deploy e smoke test em sequência.
+
+## Prints do funcionamento
+
+- [GitHub Actions — execuções de CI/CD](https://github.com/strFelix/aquaguard-dotnet-api/actions)
+- [Health check de staging](https://aquaguardapi-staging-e7aeezcqatemaght.canadacentral-01.azurewebsites.net/health)
+- [Health check de produção](https://aquaguardapi-evh6dzbvg4b8d7cd.canadacentral-01.azurewebsites.net/health)
+
+Os links de health check foram verificados e retornaram `Healthy`. Para a documentação PDF/PPT, capture também uma execução aprovada do pipeline e uma tela do Swagger ou resposta de login em cada ambiente depois dos próximos deploys.
 
 ## Diferenciais Implementados
 
@@ -231,7 +306,7 @@ dotnet test
 - Swagger com suporte a autenticação JWT integrada
 - Logging estruturado via `ILogger`
 - Health Check de conectividade com o banco de dados
-- Dockerfile funcional para containerização
+- Dockerfile multi-stage e Docker Compose para API + PostgreSQL local
 - Response Pattern padronizado (`ApiResponseViewModel`, `ErrorResponseViewModel`)
 - Soft Delete em medidores
 - Versionamento de rotas preparado para evolução (`/api/v1`)

@@ -73,7 +73,9 @@ public class LeituraService : ILeituraService
     private async Task AnalisarVazamentoAsync(LeituraConsumo leitura)
     {
         IEnumerable<LeituraConsumo> ultimasLeituras = await _leituraRepository.GetUltimosDiasAsync(leitura.MedidorId, 7);
-        List<LeituraConsumo> listaLeituras = ultimasLeituras.ToList();
+        List<LeituraConsumo> listaLeituras = ultimasLeituras
+            .Where(l => l.Id != leitura.Id)
+            .ToList();
 
         if (!listaLeituras.Any()) return;
 
