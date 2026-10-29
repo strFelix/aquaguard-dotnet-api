@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["consumoMes", "economiaPercentual", "alertasAtivos", "vazamentosDetectados", "medidoresMonitorados"],
+  "properties": {
+    "consumoMes": { "type": "number" },
+    "economiaPercentual": { "type": "number" },
+    "alertasAtivos": { "type": "integer" },
+    "vazamentosDetectados": { "type": "integer" },
+    "medidoresMonitorados": { "type": "integer" }
+  }
+}

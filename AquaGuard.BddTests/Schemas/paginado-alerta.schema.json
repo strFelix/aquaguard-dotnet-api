@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["page", "pageSize", "totalRecords", "totalPages", "data"],
+  "properties": {
+    "page": { "type": "integer" },
+    "pageSize": { "type": "integer" },
+    "totalRecords": { "type": "integer" },
+    "totalPages": { "type": "integer" },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "medidorId", "codigoMedidor", "tipo", "descricao", "resolvido", "dataCriacao"],
+        "properties": {
+          "id": { "type": "integer" },
+          "medidorId": { "type": "integer" },
+          "codigoMedidor": { "type": "string" },
+          "tipo": { "type": "string" },
+          "descricao": { "type": "string" },
+          "resolvido": { "type": "boolean" },
+          "dataCriacao": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

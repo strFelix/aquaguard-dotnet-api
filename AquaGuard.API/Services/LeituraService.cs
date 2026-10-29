@@ -65,7 +65,7 @@ public class LeituraService : ILeituraService
         await AnalisarVazamentoAsync(leitura);
         await AnalisarLimiteMensalAsync(leitura);
 
-        LeituraConsumo? leituraCompleta = await _leituraRepository.GetByIdAsync(leitura.Id);
+        LeituraConsumo? leituraCompleta = await _leituraRepository.GetByIdWithDetailsAsync(leitura.Id);
 
         return MapToViewModel(leituraCompleta!);
     }

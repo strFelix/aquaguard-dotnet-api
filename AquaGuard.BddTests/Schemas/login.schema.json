@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["success", "message", "data"],
+  "properties": {
+    "success": { "type": "boolean", "const": true },
+    "message": { "type": "string" },
+    "data": {
+      "type": "object",
+      "required": ["token", "nome", "email", "role", "expiracao"],
+      "properties": {
+        "token": { "type": "string", "minLength": 1 },
+        "nome": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string" },
+        "expiracao": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

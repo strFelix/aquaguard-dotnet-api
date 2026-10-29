@@ -1,8 +1,6 @@
 using AquaGuard.API.Data;
 using AquaGuard.API.Extensions;
 using AquaGuard.API.Middleware;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -13,9 +11,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
-
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

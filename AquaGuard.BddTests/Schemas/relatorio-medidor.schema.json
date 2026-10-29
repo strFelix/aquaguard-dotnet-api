@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["medidorId", "codigoMedidor", "localizacao", "consumoMesAtual", "consumoMesAnterior", "limiteMensal", "economiaPercentual", "diferencaLitros", "tendencia"],
+  "properties": {
+    "medidorId": { "type": "integer" },
+    "codigoMedidor": { "type": "string" },
+    "localizacao": { "type": "string" },
+    "consumoMesAtual": { "type": "number" },
+    "consumoMesAnterior": { "type": "number" },
+    "limiteMensal": { "type": "number" },
+    "economiaPercentual": { "type": "number" },
+    "diferencaLitros": { "type": "number" },
+    "tendencia": { "type": "string" }
+  }
+}

@@ -26,9 +26,16 @@ public class LeituraRepository : BaseRepository<LeituraConsumo>, ILeituraReposit
         return (items, total);
     }
 
+    public async Task<LeituraConsumo?> GetByIdWithDetailsAsync(int id) =>
+        await _context.Leituras
+            .Include(l => l.Medidor)
+            .Include(l => l.Usuario)
+            .FirstOrDefaultAsync(l => l.Id == id);
+
     public async Task<IEnumerable<LeituraConsumo>> GetByMedidorAsync(int medidorId) =>
         await _context.Leituras
             .Include(l => l.Medidor)
+            .Include(l => l.Usuario)
             .Where(l => l.MedidorId == medidorId)
             .OrderByDescending(l => l.DataLeitura)
             .ToListAsync();
@@ -36,6 +43,7 @@ public class LeituraRepository : BaseRepository<LeituraConsumo>, ILeituraReposit
     public async Task<IEnumerable<LeituraConsumo>> GetByPeriodoAsync(DateTime inicio, DateTime fim) =>
         await _context.Leituras
             .Include(l => l.Medidor)
+            .Include(l => l.Usuario)
             .Where(l => l.DataLeitura >= inicio && l.DataLeitura <= fim)
             .OrderByDescending(l => l.DataLeitura)
             .ToListAsync();

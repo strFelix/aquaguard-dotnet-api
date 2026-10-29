@@ -1,0 +1,10 @@
+services:
+  bdd-tests:
+    build: .
+    env_file: .env
+    environment:
+      BASE_URL: ${BASE_URL_DOCKER:-http://host.docker.internal:5187}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./test-results:/results

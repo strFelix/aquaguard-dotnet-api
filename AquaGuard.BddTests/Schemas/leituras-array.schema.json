@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "medidorId", "codigoMedidor", "litrosConsumidos", "dataLeitura", "usuarioId", "nomeUsuario"],
+    "properties": {
+      "id": { "type": "integer" },
+      "medidorId": { "type": "integer" },
+      "codigoMedidor": { "type": "string" },
+      "litrosConsumidos": { "type": "number" },
+      "dataLeitura": { "type": "string", "format": "date-time" },
+      "usuarioId": { "type": "integer" },
+      "nomeUsuario": { "type": "string" }
+    }
+  }
+}

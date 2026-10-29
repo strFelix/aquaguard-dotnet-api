@@ -33,6 +33,15 @@ public class LeiturasController : ControllerBase
         [FromQuery] DateTime inicio,
         [FromQuery] DateTime fim)
     {
+        if (fim < inicio)
+        {
+            return BadRequest(new ErrorResponseViewModel
+            {
+                Message = "A data final deve ser igual ou posterior à data inicial.",
+                StatusCode = StatusCodes.Status400BadRequest
+            });
+        }
+
         IEnumerable<LeituraResponseViewModel> resultado = await _leituraService.GetByPeriodoAsync(inicio, fim);
         return Ok(resultado);
     }

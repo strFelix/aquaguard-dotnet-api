@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["id", "codigo", "localizacao", "limiteMensalLitros", "ativo", "dataCriacao"],
+  "properties": {
+    "id": { "type": "integer" },
+    "codigo": { "type": "string" },
+    "localizacao": { "type": "string" },
+    "limiteMensalLitros": { "type": "number" },
+    "ativo": { "type": "boolean" },
+    "dataCriacao": { "type": "string", "format": "date-time" }
+  }
+}

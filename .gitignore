@@ -5,6 +5,8 @@
 .env
 .env.*
 !.env.example
+AquaGuard.BddTests/test-results/
+AquaGuard.BddTests/Features/*.feature.cs
 
 # .NET Core build folders
 bin/

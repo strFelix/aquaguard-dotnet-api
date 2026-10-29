@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": ["success", "message", "data"],
+      "properties": {
+        "success": { "type": "boolean", "const": false },
+        "message": { "type": "string" },
+        "data": {}
+      }
+    },
+    {
+      "type": "object",
+      "required": ["success", "message", "statusCode", "timestamp"],
+      "properties": {
+        "success": { "type": "boolean", "const": false },
+        "message": { "type": "string" },
+        "statusCode": { "type": "integer" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "type": "object",
+      "required": ["status", "title", "errors"],
+      "properties": {
+        "status": { "type": "integer" },
+        "title": { "type": "string" },
+        "errors": { "type": "object" }
+      }
+    }
+  ]
+}

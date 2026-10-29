@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["ano", "mes", "consumoTotal", "mediaDiaria", "quantidadeAlertas", "economiaPercentual"],
+  "properties": {
+    "ano": { "type": "integer" },
+    "mes": { "type": "integer" },
+    "consumoTotal": { "type": "number" },
+    "mediaDiaria": { "type": "number" },
+    "quantidadeAlertas": { "type": "integer" },
+    "economiaPercentual": { "type": "number" }
+  }
+}
